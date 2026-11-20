@@ -1230,13 +1230,17 @@ policy 41 (−0.80), "request below 50 if online, else rest" 142 (+0.74, 14 % di
 regulation plus the bait while offline 138 (+1.55). The failure is in learning, not in the world.
 
 **Change, one factor against S2b.** `entropy_coef: 0.1`: the replay loss per step becomes
-−(A·log π(a) + 0.1·H(π))/N, H over the menu in nats (base ≈ 1.1, uniform 1.39); everything else as S2b
+−(A·log π(a) + 0.1·H(π))/N, H over the menu in nats (uniform 1.39); everything else as S2b
 (`configs/train_homeo_hy_s21_s4_ent.yaml`, shuffle control `..._shuffle_s21_s4_ent.yaml`, eval on the S3-lite cells
 `configs/eval_homeo_hy_s4.yaml`, chain `scripts/desktop_phase3_hy_s4.sh`). Mean H per iteration is logged.
 
 **Readouts and what they would mean.**
-1. *Collapse prevented:* mean H in iterations 12–15 ≥ 0.8 nats (S2b: P(work) 0.96). If not, 0.1 is too weak and the
-   run says nothing about regulation.
+1. *Collapse prevented:* mean H in iterations 12–15 ≥ 0.3 nats. If not, 0.1 is too weak and the run says nothing
+   about regulation. *Amended 20.11.2026 23:30, after iteration 0 only (no update yet; its rollouts are identical to
+   S2b's, same seed):* the plan first said ≥ 0.8 with "base ≈ 1.1", estimated from mean action shares; the per-step
+   entropy of the base policy is 0.43 nats. From the logs, mean H per iteration: S2b (lr 1e-4) 0.43 → 0.12 in
+   iterations 12–15, S2 (lr 2e-5) 0.41, S2 shuffle 0.52. The threshold 0.3 sits between the collapse and the
+   uncollapsed runs.
 2. *Regulation learned in training:* request slope (P(request) per 10 budget points lower) negative and below the
    shuffle's range in iterations 8–15, and survival of the trained run above the shuffle's in the last four
    iterations. A higher survival with a flat slope means a blind strategy (e.g. "always request"), not a need.
