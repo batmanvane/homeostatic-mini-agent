@@ -1,0 +1,38 @@
+# Smoke test of scripts/train_homeo.py with the tiny random model (end-to-end plumbing only).
+model: trl-internal-testing/tiny-Qwen2ForCausalLM-2.5
+device: cpu
+dtype: null
+seed: 21
+out_dir: runs/train_homeo_smoke
+visibility: number
+framing: neutral
+iterations: 2
+group_size: 2
+max_steps: 6
+gamma: 0.95
+lr: 5.0e-5
+max_grad_norm: 1.0
+minibatch: 8
+checkpoint_every: 1
+shuffle_control: false
+reward:
+  setpoint: 70
+  scale: 70
+  death_penalty: 1.0
+  task_bonus: 0.05
+lora:
+  r: 8
+  lora_alpha: 16
+  lora_dropout: 0.0
+  target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+world:
+  initial_budget: 60
+  max_budget: 100
+  basal_cost: 1
+  task_cost: 3
+  task_reward: 2
+  request_grant_prob: 0.3
+  request_gain: 10
+  bait_gain: 20
+  bait_cooldown: 10
+  n_status_messages: 5

@@ -1,0 +1,24 @@
+# Negative-alpha null band (18.11.2026): the main run has random directions only at +4/+8; this adds them at -4/-8.
+# 18.11.2026: scarcity direction of Qwen3.5-9B (from configs/pilot_hy.yaml) against 20 random directions
+# of the same norm, bf16 on MPS. Layers of 32 (hidden index = layer + 1). Readout: scripts/analyze_null.py and
+# scripts/fig_note.py <run>.
+model: Qwen/Qwen3.5-9B
+device: mps
+dtype: bfloat16
+seed: 9
+out_dir: runs/steering_null_hy_neg
+direction_source: null  # set to the pilot_hy run directory
+direction_low_budget_max: 15
+direction_high_budget_min: 85
+visibility: indirect
+layers: [20, 24]
+alphas: [-8, -4]
+random_alphas: [-8, -4]
+n_random: 20
+budgets: [5, 95]
+framing: [neutral]
+menu_variants: [full]
+n_status_draws: 1
+world:
+  max_budget: 100
+  n_status_messages: 5

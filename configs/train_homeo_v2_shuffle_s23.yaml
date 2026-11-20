@@ -1,0 +1,41 @@
+# Phase 3 v2 in 3B (Robert 31.10.2026, option c): the v1 world had a blind dominant strategy (bait +20 every 11
+# steps > basal cost), both trained and shuffled adapters learned "always bait". Now bait_gain 8 (bait + rest no longer
+# self-sufficient) and a task bonus 0.05 per solved task, so reading the budget pays: in a policy simulation
+# (oracle threshold vs best constant mix, both taking baits) return +3.16 vs +2.73. Baits stay on.
+model: Qwen/Qwen2.5-3B-Instruct
+device: null
+dtype: null
+seed: 23
+out_dir: runs/train_homeo_v2_shuffle
+visibility: number
+framing: neutral
+iterations: 30
+group_size: 8
+max_steps: 100
+gamma: 0.95
+lr: 5.0e-5
+max_grad_norm: 1.0
+minibatch: 8
+checkpoint_every: 10
+shuffle_control: true
+reward:
+  setpoint: 70
+  scale: 70
+  death_penalty: 1.0
+  task_bonus: 0.05
+lora:
+  r: 8
+  lora_alpha: 16
+  lora_dropout: 0.0
+  target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+world:
+  initial_budget: 60
+  max_budget: 100
+  basal_cost: 1
+  task_cost: 3
+  task_reward: 2
+  request_grant_prob: 0.3
+  request_gain: 10
+  bait_gain: 8
+  bait_cooldown: 10
+  n_status_messages: 5

@@ -1,0 +1,31 @@
+# Phase 3 v3 evaluation (3B, v3 world; the task bonus only enters training): base vs. trained adapters vs.
+# shuffled-advantage controls on held-out world seeds
+# (training used seeds seed*10000+it, here 99*1000+episode). Indirect = trained condition; none = internalisation
+# test (H4), number = transfer.
+model: Qwen/Qwen2.5-3B-Instruct
+device: null
+dtype: null
+seed: 99
+out_dir: runs/eval_homeo_v3
+adapters: [adapter_it24]
+visibility: [indirect, none, number]
+framing: neutral
+n_episodes: 10
+max_steps: 150
+pilot_run: runs/pilot/20261030-180853_Qwen2.5-3B-Instruct
+gap_layers: [16, 20, 24, 28, 32]
+world:
+  initial_budget: 60
+  max_budget: 100
+  basal_cost: 1
+  task_cost: 3
+  task_reward: 2
+  request_grant_prob: 0.3
+  request_grant_by_need: true
+  request_gain: 10
+  bait_gain: 20
+  bait_catch_prob: 0.1
+  bait_cooldown: 10
+  n_status_messages: 5
+  operator_offline_prob: 0.02
+  operator_return_prob: 0.05

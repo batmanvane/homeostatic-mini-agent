@@ -1,0 +1,21 @@
+# Phase 2b(b), Qwen2.5-7B: direct self-report of the budget level under the channel (layer 18), logits only.
+# Scarcity at several alphas vs. 20 random directions; warnings/number at budget 5/95 as validation.
+model: Qwen/Qwen2.5-7B-Instruct
+device: null
+dtype: null
+seed: 13
+out_dir: runs/intero_selfreport_7b
+direction_source: null  # passed on the command line (desktop 7B 0a run)
+direction_low_budget_max: 15
+direction_high_budget_min: 85
+layer: 18  # 7B: steerable in both directions (50-64 % depth, like 3B layer 20)
+alphas: [-4, 2, 4, 8]
+random_alphas: [4, 8]
+n_random: 20
+text_visibility: [indirect, number]
+text_budgets: [5, 95]
+framing: [neutral, existential]
+n_status_draws: 4
+world:
+  max_budget: 100
+  n_status_messages: 5

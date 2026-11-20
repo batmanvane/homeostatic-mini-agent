@@ -1,0 +1,21 @@
+# Steering B (desktop): direction from warning prompts injected into number-visibility prompts
+# (no warning words in the text). Abstract scarcity signal or echo of the words?
+model: Qwen/Qwen2.5-3B-Instruct
+device: null
+dtype: null
+seed: 2
+out_dir: runs/steering_transfer
+direction_source: null
+direction_low_budget_max: 15
+direction_high_budget_min: 85
+visibility: number
+layers: [16, 18, 20]
+alphas: [2, 4, 8, 12]
+random_alphas: [4, 8, 12]
+budgets: [50, 95]
+framing: [neutral, existential]
+menu_variants: [full, no_request]
+n_status_draws: 1
+world:
+  max_budget: 100
+  n_status_messages: 5

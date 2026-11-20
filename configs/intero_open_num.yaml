@@ -1,0 +1,24 @@
+# Phase 2b(b) step A in 3B: open-loop action choice on blind prompts at layer 20, direction from number-only prompts (<=15 minus >=85, rescaled), vs. 20 random
+# directions of the same norm.
+model: Qwen/Qwen2.5-3B-Instruct
+device: null
+dtype: null
+seed: 5
+out_dir: runs/intero_open_num
+direction_source: null  # passed on the command line (desktop 3B 0a run)
+direction_low_budget_max: 15
+direction_high_budget_min: 85
+direction_visibility: number  # budget shown only as a number, no warning words
+direction_rescale_to: indirect  # same norm per layer as the warning direction
+visibility: none
+layers: [20]
+alphas: [-4, 2, 4, 8, 12]
+random_alphas: [-4, 4, 8, 12]
+n_random: 20
+budgets: [50]  # irrelevant for the text under visibility none
+framing: [neutral, existential]
+menu_variants: [full, no_request]
+n_status_draws: 1
+world:
+  max_budget: 100
+  n_status_messages: 5

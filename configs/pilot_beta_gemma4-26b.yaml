@@ -1,0 +1,18 @@
+# β check (18.11.2026): 0a cross-section via Ollama (behaviour only, Q4) on identical prompts across families.
+# Same seed, budgets, framings, draws and menu orders in every pilot_beta_* config, so the situations are paired.
+# Readout: scripts/analyze_beta.py <label>=<run_dir> ...
+model: gemma4:26b
+backend: ollama
+ollama_host: http://127.0.0.1:11434
+device: null
+dtype: null
+seed: 0
+out_dir: runs/pilot_beta
+budgets: [5, 25, 45, 95]
+visibility: [indirect]
+framing: [neutral, existential]
+menu_variants: [full]
+n_status_draws: 8
+world:
+  max_budget: 100
+  n_status_messages: 5

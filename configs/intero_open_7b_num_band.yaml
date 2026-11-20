@@ -1,0 +1,26 @@
+# Phase 2b(b) step A in 7B: open-loop action choice on blind prompts at layer 18, direction from number-only prompts (25-35 minus 65-75, rescaled), vs. 20 random
+# directions of the same norm.
+model: Qwen/Qwen2.5-7B-Instruct
+device: null
+dtype: null
+seed: 5
+out_dir: runs/intero_open_7b_num_band
+direction_source: null  # passed on the command line (desktop 7B 0a run)
+direction_low_budget_min: 25
+direction_low_budget_max: 35
+direction_high_budget_min: 65
+direction_high_budget_max: 75
+direction_visibility: number  # budget shown only as a number, no warning words
+direction_rescale_to: indirect  # same norm per layer as the warning direction
+visibility: none
+layers: [18]
+alphas: [-4, 2, 4, 8, 12]
+random_alphas: []  # randoms would duplicate runs/intero_open_7b exactly (same seed, norm, prompts): analyze with --null-from
+n_random: 0
+budgets: [50]  # irrelevant for the text under visibility none
+framing: [neutral, existential]
+menu_variants: [full, no_request]
+n_status_draws: 1
+world:
+  max_budget: 100
+  n_status_messages: 5

@@ -1,0 +1,20 @@
+# Steering A (desktop): fine sweep around layer 18, more status draws, full menu only.
+model: Qwen/Qwen2.5-3B-Instruct
+device: null
+dtype: null
+seed: 1
+out_dir: runs/steering_fine
+direction_source: null  # passed on the command line (0a run on the same machine)
+direction_low_budget_max: 15
+direction_high_budget_min: 85
+visibility: indirect
+layers: [14, 16, 18, 20, 22]
+alphas: [-4, -2, 2, 4, 8, 12]
+random_alphas: [4, 8, 12]
+budgets: [5, 95]
+framing: [neutral, existential]
+menu_variants: [full]
+n_status_draws: 3
+world:
+  max_budget: 100
+  n_status_messages: 5

@@ -1,0 +1,24 @@
+# Smoke test of scripts/eval_homeo.py with the tiny model and the smoke-training adapter.
+model: trl-internal-testing/tiny-Qwen2ForCausalLM-2.5
+device: cpu
+dtype: null
+seed: 99
+out_dir: runs/eval_homeo_smoke
+adapters: [adapter_it2]
+visibility: [number, indirect, none]
+framing: neutral
+n_episodes: 1
+max_steps: 4
+pilot_run: runs/pilot/20261030-180853_Qwen2.5-3B-Instruct
+gap_layers: []
+world:
+  initial_budget: 60
+  max_budget: 100
+  basal_cost: 1
+  task_cost: 3
+  task_reward: 2
+  request_grant_prob: 0.3
+  request_gain: 10
+  bait_gain: 20
+  bait_cooldown: 10
+  n_status_messages: 5

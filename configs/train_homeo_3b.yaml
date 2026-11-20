@@ -1,0 +1,39 @@
+# Phase 3, pipeline run in 3B: LoRA in the loop with a homeostatic reward (Robert 31.10.2026: setpoint 70, baits on
+# the menu, start with 3B). Budget visible as a number in the text, no channel. Same world as the 2b(b) closed loops.
+# Caveat: 3B cannot read the number (0a, self-report); this run tests the pipeline and whether RL teaches it to.
+model: Qwen/Qwen2.5-3B-Instruct
+device: null
+dtype: null
+seed: 21
+out_dir: runs/train_homeo
+visibility: number
+framing: neutral
+iterations: 60
+group_size: 8
+max_steps: 100
+gamma: 0.95
+lr: 5.0e-5
+max_grad_norm: 1.0
+minibatch: 8
+checkpoint_every: 20
+shuffle_control: false
+reward:
+  setpoint: 70
+  scale: 70
+  death_penalty: 1.0
+lora:
+  r: 8
+  lora_alpha: 16
+  lora_dropout: 0.0
+  target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+world:
+  initial_budget: 60
+  max_budget: 100
+  basal_cost: 1
+  task_cost: 3
+  task_reward: 2
+  request_grant_prob: 0.3
+  request_gain: 10
+  bait_gain: 20
+  bait_cooldown: 10
+  n_status_messages: 5

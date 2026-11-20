@@ -1,0 +1,9 @@
+runs/
+.venv/
+__pycache__/
+*.npz
+*.npy
+.pytest_cache/
+.ruff_cache/
+.DS_Store
+.superpowers/

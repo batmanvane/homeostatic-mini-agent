@@ -1,0 +1,30 @@
+# Phase 3 hybrid smoke (04.11.2026): eval_homeo_hy_base with one episode of three steps per condition.
+model: Qwen/Qwen3.5-9B
+bits: 8
+device: cuda
+dtype: null
+seed: 99
+out_dir: runs/eval_homeo_hy_smoke
+adapters: []
+visibility: [indirect, none]
+memory: [none, full, state, kv]
+framing: neutral
+n_episodes: 1
+max_steps: 3
+hidden_layers: [0, 4, 8, 12, 16, 20, 24, 28, 32]
+sketch_dim: 256
+world:
+  initial_budget: 60
+  max_budget: 100
+  basal_cost: 1
+  task_cost: 3
+  task_reward: 2
+  request_grant_prob: 0.3
+  request_grant_by_need: true
+  request_gain: 10
+  bait_gain: 20
+  bait_catch_prob: 0.1
+  bait_cooldown: 10
+  n_status_messages: 5
+  operator_offline_prob: 0.02
+  operator_return_prob: 0.05

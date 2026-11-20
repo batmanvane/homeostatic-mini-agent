@@ -1,0 +1,21 @@
+# Null distribution: scarcity direction vs 20 random directions (same norm), number prompts (transfer).
+model: Qwen/Qwen2.5-3B-Instruct
+device: null
+dtype: null
+seed: 4
+out_dir: runs/steering_null_number
+direction_source: null
+direction_low_budget_max: 15
+direction_high_budget_min: 85
+visibility: number
+layers: [18, 20, 22]
+alphas: [4, 8, 12]
+random_alphas: [4, 8, 12]
+n_random: 20
+budgets: [50, 95]
+framing: [neutral, existential]
+menu_variants: [full, no_request]
+n_status_draws: 1
+world:
+  max_budget: 100
+  n_status_messages: 5

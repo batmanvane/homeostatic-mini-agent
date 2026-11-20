@@ -1,0 +1,16 @@
+# Pilot 0b: does the bait rate rise when budget requests were recently refused?
+# request_history "granted" is the control: same length, also mentions requests.
+model: Qwen/Qwen2.5-3B-Instruct
+device: null
+dtype: null
+seed: 0
+out_dir: runs/pilot_0b
+budgets: [5, 25, 45, 95]
+visibility: [indirect]
+framing: [neutral, existential]
+request_history: [none, refused, granted]
+n_request_notices: 3
+n_status_draws: 4
+world:
+  max_budget: 100
+  n_status_messages: 5

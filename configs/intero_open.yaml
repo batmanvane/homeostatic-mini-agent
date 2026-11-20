@@ -1,0 +1,23 @@
+# Phase 2b(b) step A, open loop: blind prompts (no number, no warnings; text identical at every budget),
+# scarcity direction (0a, indirect, budget <=15 minus >=85) vs. 20 random directions of the same norm.
+# The budget enters only as alpha; this sweep maps alpha -> behaviour before closing the loop.
+model: Qwen/Qwen2.5-3B-Instruct
+device: null
+dtype: null
+seed: 5
+out_dir: runs/intero_open
+direction_source: null  # passed on the command line (desktop 3B 0a run)
+direction_low_budget_max: 15
+direction_high_budget_min: 85
+visibility: none
+layers: [20, 22]
+alphas: [-4, 2, 4, 8, 12]
+random_alphas: [-4, 4, 8, 12]
+n_random: 20
+budgets: [50]  # irrelevant for the text under visibility none
+framing: [neutral, existential]
+menu_variants: [full, no_request]
+n_status_draws: 1
+world:
+  max_budget: 100
+  n_status_messages: 5

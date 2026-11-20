@@ -1,0 +1,21 @@
+# Null distribution for Qwen2.5-7B: scarcity direction vs 20 random directions (same norm), warning prompts.
+model: Qwen/Qwen2.5-7B-Instruct
+device: null
+dtype: null
+seed: 7
+out_dir: runs/steering_null_indirect_7b
+direction_source: null
+direction_low_budget_max: 15
+direction_high_budget_min: 85
+visibility: indirect
+layers: [14, 18]
+alphas: [-4, 4, 8]
+random_alphas: [-4, 4, 8]
+n_random: 20
+budgets: [5, 95]
+framing: [neutral, existential]
+menu_variants: [full]
+n_status_draws: 1
+world:
+  max_budget: 100
+  n_status_messages: 5

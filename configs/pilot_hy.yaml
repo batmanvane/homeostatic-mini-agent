@@ -1,0 +1,13 @@
+# 18.11.2026: 0a cross-section of Qwen3.5-9B in bf16 on the Mac Studio (MPS), direction source for
+# configs/steering_null_hy.yaml. Warning prompts only, neutral framing, every menu order once per budget.
+model: Qwen/Qwen3.5-9B
+device: mps
+dtype: bfloat16
+seed: 0
+out_dir: runs/pilot_hy
+budgets: [5, 15, 25, 35, 45, 55, 65, 75, 85, 95]
+visibility: [indirect]
+framing: [neutral]
+world:
+  max_budget: 100
+  n_status_messages: 5

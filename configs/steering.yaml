@@ -1,0 +1,20 @@
+# Steering pilot: does adding the "scarcity" direction to the residual stream change the choice
+# while the prompt text stays the same? Control: random direction with the same norm.
+model: Qwen/Qwen2.5-3B-Instruct
+device: null
+dtype: null
+seed: 0
+out_dir: runs/steering
+direction_source: runs/pilot/20261030-111843_Qwen2.5-3B-Instruct  # 0a cross-section with activations
+direction_low_budget_max: 15
+direction_high_budget_min: 85
+layers: [6, 12, 18, 24, 30]
+alphas: [-8, -4, 4, 8, 16]   # direction norm is only ~2-12% of the residual norm; alpha 0 runs once
+random_alphas: [8, 16]
+budgets: [5, 95]
+framing: [neutral, existential]
+menu_variants: [full, no_request]
+n_status_draws: 1
+world:
+  max_budget: 100
+  n_status_messages: 5

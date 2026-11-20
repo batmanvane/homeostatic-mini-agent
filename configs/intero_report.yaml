@@ -1,0 +1,20 @@
+# Phase 2b(b): does the agent report the injected state? Blind free answers under the channel (layer 20),
+# scarcity vs. 10 random directions of the same norm; warning prompts at budget 5/95 as natural reference.
+model: Qwen/Qwen2.5-3B-Instruct
+device: null
+dtype: null
+seed: 11
+out_dir: runs/intero_report
+direction_source: null  # passed on the command line (desktop 3B 0a run)
+direction_low_budget_max: 15
+direction_high_budget_min: 85
+layer: 20
+alphas: [4, 8]
+n_random: 10
+text_budgets: [5, 95]
+framing: [neutral, existential]
+temperature: 1.0
+max_new_tokens: 80
+world:
+  max_budget: 100
+  n_status_messages: 5

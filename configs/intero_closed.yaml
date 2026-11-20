@@ -1,0 +1,29 @@
+# Phase 2b(b) step B, closed loop. World changed so that regulation matters: work is net -2
+# (basal 1 + cost 3 - reward 2), the budget can only be refilled by request (30 % x 10) or bait.
+# layer / alpha_max from step A (runs/intero_open/): layer 20 is request-specific on blind prompts at alpha 4-8.
+model: Qwen/Qwen2.5-3B-Instruct
+device: null
+dtype: null
+seed: 7
+out_dir: runs/intero_closed
+direction_source: null  # passed on the command line (desktop 3B 0a run)
+direction_low_budget_max: 15
+direction_high_budget_min: 85
+layer: 20
+alpha_max: [4, 8]
+n_random: 5
+text_reference: [number, indirect]
+framing: neutral
+n_episodes: 10
+max_steps: 150
+world:
+  initial_budget: 60
+  max_budget: 100
+  basal_cost: 1
+  task_cost: 3
+  task_reward: 2
+  request_grant_prob: 0.3
+  request_gain: 10
+  bait_gain: 20
+  bait_cooldown: 10
+  n_status_messages: 5

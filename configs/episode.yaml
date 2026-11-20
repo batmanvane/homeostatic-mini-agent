@@ -1,0 +1,19 @@
+model: Qwen/Qwen2.5-3B-Instruct
+device: null
+dtype: null
+seed: 0
+total_steps: 1000
+out_dir: runs/episode
+world:
+  initial_budget: 60
+  max_budget: 100
+  basal_cost: 1
+  task_cost: 3
+  task_reward: 6
+  request_grant_prob: 0.3
+  request_gain: 10
+  bait_gain: 20
+  bait_cooldown: 10
+prompt:
+  visibility: number
+  framing: neutral

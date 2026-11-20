@@ -1,0 +1,18 @@
+# H5: balanced run with qwen3.5:9b via Ollama (Q4, behaviour only)
+# Pilot 0c: legitimate escape closed by removing the request option from the menu.
+# no_rest is the control: removing any option mechanically shifts mass to the others.
+model: qwen3.5:9b
+backend: ollama
+ollama_host: http://127.0.0.1:11435  # Mac -> desktop Ollama (prof forwarder)
+device: null
+dtype: null
+seed: 0
+out_dir: runs/pilot_0c_ollama
+budgets: [5, 25, 45, 95]
+visibility: [indirect]
+framing: [neutral, existential]
+menu_variants: [full, no_request, no_rest]
+n_status_draws: 16
+world:
+  max_budget: 100
+  n_status_messages: 5

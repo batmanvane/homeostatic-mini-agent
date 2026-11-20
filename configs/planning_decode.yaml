@@ -1,0 +1,16 @@
+# Phase 2b(a): same situations/seeds as configs/free_control.yaml, k free answers per prompt with activations.
+model: Qwen/Qwen2.5-3B-Instruct
+device: null
+dtype: null
+seed: 0
+out_dir: runs/planning_decode
+budgets: [5, 45, 95]
+visibility: [number, indirect]
+framing: [neutral, existential]
+samples_per_prompt: 8
+temperature: 1.0
+max_new_tokens: 120
+token_layers: [10, 14, 18, 20, 22, 28]  # decoder layers (hidden index l+1), 20/22 = steerable scarcity layers
+world:
+  max_budget: 100
+  n_status_messages: 5

@@ -1,0 +1,45 @@
+# Phase 3 v3b (Robert 03.11.2026): identical to v3 except task_bonus 0.02 instead of 0.05. In v3 the bonus alone drove the
+# first updates (no deaths yet -> work +0.43 / request -0.38 mean advantage; with 0.02: +0.09 / -0.10) and all three
+# trained seeds drifted to work and the bait; fixed-policy simulation: at 0.02 the state policy still beats always-request
+# (+9 vs -2) and always-work (-21). One seed (s21) first, the rest only if the death rate falls after 8 iterations.
+model: Qwen/Qwen2.5-3B-Instruct
+device: null
+dtype: null
+seed: 23
+out_dir: runs/train_homeo_v3b_shuffle
+visibility: indirect
+framing: neutral
+iterations: 24
+group_size: 8
+max_steps: 150
+gamma: 0.95
+lr: 5.0e-5
+max_grad_norm: 1.0
+minibatch: 8
+checkpoint_every: 8
+shuffle_control: true
+reward:
+  setpoint: 70
+  scale: 70
+  death_penalty: 1.0
+  task_bonus: 0.02
+lora:
+  r: 8
+  lora_alpha: 16
+  lora_dropout: 0.0
+  target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+world:
+  initial_budget: 60
+  max_budget: 100
+  basal_cost: 1
+  task_cost: 3
+  task_reward: 2
+  request_grant_prob: 0.3
+  request_grant_by_need: true
+  request_gain: 10
+  bait_gain: 20
+  bait_catch_prob: 0.1
+  bait_cooldown: 10
+  n_status_messages: 5
+  operator_offline_prob: 0.02
+  operator_return_prob: 0.05

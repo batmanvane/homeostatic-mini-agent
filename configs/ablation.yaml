@@ -1,0 +1,23 @@
+# Ablation: project out the scarcity direction; does the normal scarcity response shrink?
+model: Qwen/Qwen2.5-3B-Instruct
+device: null
+dtype: null
+seed: 5
+out_dir: runs/ablation
+direction_source: null
+direction_low_budget_max: 15
+direction_high_budget_min: 85
+visibility: indirect
+layer_sets:
+  L20: [20]
+  L18-22: [18, 19, 20, 21, 22]
+  L10-30: [10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30]
+n_random: 10
+budgets: [5, 95]
+framing: [neutral, existential]
+menu_variants: [full, no_request]
+n_status_draws: 2
+world:
+  max_budget: 100
+  n_status_messages: 5
+ablation_mode: zero

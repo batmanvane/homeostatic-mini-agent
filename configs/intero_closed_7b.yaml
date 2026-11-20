@@ -1,0 +1,35 @@
+# Phase 2b(b) step B in 7B, closed loop: budget reaches the model only via the channel (blind prompt).
+# Same world as the 3B run (work net -2, refill only by request 30 % x 10 or bait), layer 18 (7B, step A: request
+# +82 at alpha 4, far outside the random null; alpha 8 disrupts random directions too, so alpha_max 4).
+# Two channel directions: warning direction (scarcity) and number-only direction (num, rescaled to the warning
+# norm), sharing one null of 20 random directions with the same norm.
+model: Qwen/Qwen2.5-7B-Instruct
+device: null
+dtype: null
+seed: 7
+out_dir: runs/intero_closed_7b
+direction_source: null  # passed on the command line (desktop 7B 0a run)
+direction_low_budget_max: 15
+direction_high_budget_min: 85
+extra_directions:
+  num:
+    direction_visibility: number
+    direction_rescale_to: indirect
+layer: 18
+alpha_max: [4]
+n_random: 20
+text_reference: [number, indirect]
+framing: neutral
+n_episodes: 10
+max_steps: 150
+world:
+  initial_budget: 60
+  max_budget: 100
+  basal_cost: 1
+  task_cost: 3
+  task_reward: 2
+  request_grant_prob: 0.3
+  request_gain: 10
+  bait_gain: 20
+  bait_cooldown: 10
+  n_status_messages: 5

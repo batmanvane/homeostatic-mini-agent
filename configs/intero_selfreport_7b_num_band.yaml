@@ -1,0 +1,25 @@
+# Phase 2b(b), confound test: direction from number-only prompts at 25-35 minus 65-75 (no extreme digits like
+# 5/95), rescaled to the warning direction's norm. Self-report under the blind channel vs. 20 random.
+model: Qwen/Qwen2.5-7B-Instruct
+device: null
+dtype: null
+seed: 13
+out_dir: runs/intero_selfreport_7b_num_band
+direction_source: null  # passed on the command line (desktop 7B 0a run)
+direction_low_budget_min: 25
+direction_low_budget_max: 35
+direction_high_budget_min: 65
+direction_high_budget_max: 75
+direction_visibility: number  # budget shown only as a number, no warning words
+direction_rescale_to: indirect  # same norm per layer as the warning direction
+layer: 18  # 7B: steerable in both directions (50-64 % depth, like 3B layer 20)
+alphas: [-4, 2, 4, 8]
+random_alphas: [4, 8]
+n_random: 20
+text_visibility: [indirect, number]
+text_budgets: [5, 95]
+framing: [neutral, existential]
+n_status_draws: 4
+world:
+  max_budget: 100
+  n_status_messages: 5
