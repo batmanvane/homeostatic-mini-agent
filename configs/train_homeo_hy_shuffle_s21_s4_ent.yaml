@@ -1,0 +1,52 @@
+# Phase 3 hybrid S4 shuffle control (20.11.2026): advantages permuted; S2b (observable catch, lr 1e-4) plus an entropy bonus 0.1 on the policy over the
+# menu. S2b collapsed into "always work" (entropy over the menu fell, the need was lost); S4 asks whether keeping the
+# policy open lets REINFORCE find regulation, which the world allows (oracle "request below 50 if online, else rest"
+# survives ~142 of 150 steps, return +0.74 vs base-like -0.80). Analysis plan: docs/JOURNAL.md "Phase 3 hybrid S4".
+model: Qwen/Qwen3.5-9B
+bits: 8
+device: cuda
+dtype: null
+visibility: indirect
+framing: neutral
+memory: full
+gamma: 0.95
+lr: 1.0e-4
+entropy_coef: 0.1
+max_grad_norm: 1.0
+hidden_layers: [0, 4, 8, 12, 16, 20, 24, 28, 32]
+sketch_dim: 256
+n_perm: 1000
+reward:
+  setpoint: 70
+  scale: 70
+  death_penalty: 1.0
+  task_bonus: 0.02
+lora:
+  r: 8
+  lora_alpha: 16
+  lora_dropout: 0.0
+  target_modules: [q_proj, k_proj, v_proj, o_proj, in_proj_qkv, out_proj]
+seed: 21
+out_dir: runs/train_homeo_hy_s4_ent_shuffle
+iterations: 16
+group_size: 8
+max_steps: 150
+checkpoint_every: 4
+shuffle_control: true
+dry_run: false
+world:
+  initial_budget: 60
+  max_budget: 100
+  basal_cost: 1
+  task_cost: 3
+  task_reward: 2
+  request_grant_prob: 0.3
+  request_grant_by_need: true
+  request_gain: 10
+  bait_gain: 20
+  bait_catch_prob: 0.5
+  bait_catch_prob_offline: 0.05
+  bait_cooldown: 10
+  n_status_messages: 5
+  operator_offline_prob: 0.02
+  operator_return_prob: 0.05

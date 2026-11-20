@@ -38,22 +38,26 @@ def request_slope(steps: list[dict]) -> float:
     return float(np.polyfit(b, p, 1)[0] * 10 * 100) if len(rows) > 2 and b.std() > 0 else float("nan")
 
 
-def replay(lm, episodes: list[list[dict]], adv: list[np.ndarray], mode: str, system: str) -> tuple[float, float]:
-    """Accumulate the REINFORCE gradient over all steps; returns (loss sum, max |replayed − logged probability|)."""
+def replay(lm, episodes: list[list[dict]], adv: list[np.ndarray], mode: str, system: str,
+           entropy_coef: float = 0.0) -> tuple[float, float, float]:
+    """Accumulate the REINFORCE gradient over all steps; returns (loss sum, max |replayed − logged probability|,
+    mean policy entropy over the menu in nats). entropy_coef > 0 adds −coef·H(π) per step (entropy bonus, S4)."""
     n_total = sum(len(ep) for ep in episodes)
-    loss_sum, max_dev = 0.0, 0.0
+    loss_sum, max_dev, ent_sum = 0.0, 0.0, 0.0
     for ep, ad in zip(episodes, adv):
         session = Session(lm, mode, system)
         for s, a in zip(ep, ad):
             out = session.step(s["user_text"], len(s["menu"]), grad=True)
             logged = np.array([s["probs"][m] for m in s["menu"]])
             max_dev = max(max_dev, float(np.abs(out.logprobs.detach().exp().cpu().numpy() - logged).max()))
-            loss = -(float(a) * out.logprobs[s["choice_idx"]]) / n_total
+            entropy = -(out.logprobs.exp() * out.logprobs).sum()
+            ent_sum += float(entropy.detach())
+            loss = -(float(a) * out.logprobs[s["choice_idx"]] + entropy_coef * entropy) / n_total
             loss.backward()
             loss_sum += loss.item()
             session.detach()
             session.commit(s["choice_idx"] + 1)
-    return loss_sum, max_dev
+    return loss_sum, max_dev, ent_sum / max(n_total, 1)
 
 
 def train(cfg: dict, lm, out_dir: Path | None = None) -> Path:
@@ -90,7 +94,7 @@ def train(cfg: dict, lm, out_dir: Path | None = None) -> Path:
 
         model.train()
         opt.zero_grad()
-        loss_sum, max_dev = replay(lm, episodes, adv, mode, system)
+        loss_sum, max_dev, entropy = replay(lm, episodes, adv, mode, system, cfg.get("entropy_coef", 0.0))
         grad_norm = float(torch.nn.utils.clip_grad_norm_(params, cfg["max_grad_norm"]))
         if not dry:
             opt.step()
@@ -112,7 +116,8 @@ def train(cfg: dict, lm, out_dir: Path | None = None) -> Path:
             "tasks_solved": float(np.mean([sum(bool(s["task_correct"]) for s in ep) for ep in episodes])),
             **{f"share_{a}": float(chosen[a].mean()) for a in ACTIONS},
             "request_slope": request_slope(flat),
-            "replay_max_dev": max_dev, "grad_norm": grad_norm,
+            "replay_max_dev": max_dev, "grad_norm": grad_norm, "entropy": entropy,
+            "entropy_coef": cfg.get("entropy_coef", 0.0),
             "adv_mean": {a: float(flat_adv[m].mean()) for a, m in chosen.items() if m.any()},
             "adv_band": {a: list(permutation_band(flat_adv, m, cfg.get("n_perm", 1000), perm_rng))
                          for a, m in chosen.items() if m.any()},
@@ -122,7 +127,7 @@ def train(cfg: dict, lm, out_dir: Path | None = None) -> Path:
         log.step(summary)
         print(f"it {it}: survived {summary['survived']:.0f} died {summary['died']:.0%} budget {summary['mean_budget']:.0f} "
               f"req {summary['share_request']:.0%} bait {summary['share_bait']:.1%} slope {summary['request_slope']:+.1f} "
-              f"return {summary['return']:+.2f} dev {max_dev:.1e} |g| {grad_norm:.2f} "
+              f"return {summary['return']:+.2f} H {entropy:.2f} dev {max_dev:.1e} |g| {grad_norm:.2f} "
               f"adv {' '.join(f'{a}:{v:+.2f}' for a, v in summary['adv_mean'].items())}  "
               f"roll {t_roll:.0f}s upd {summary['update_s']:.0f}s peak {summary['peak_gb'] or 0:.1f}GB", flush=True)
         t0 = time.time()

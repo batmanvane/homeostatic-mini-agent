@@ -1220,6 +1220,33 @@ lr 2e-5 23 / 38, lr 1e-4 37 / 29 with P(work) 0.94, P(bait) 0.01 and 8 budget de
   consolidates first is a response to the transcript format, and the need stays in the fast state, where it is
   readable and, by the steering result, usable, but not regulating.
 
+## Phase 3 hybrid S4: an entropy bonus against the collapse, analysis plan (20.11.2026)
+
+Written before the run. **Why.** S2b (lr 1e-4) moved the policy, but into "always work": REINFORCE removed every
+action with a negative advantage and the policy over the menu closed (P(work) 0.66 → 0.96), so the need was lost
+before it could be found. A world check without the model (`World` + `step_reward`, 400 episodes per policy, all
+tasks solved) shows the world does pay regulation: always work survives 30 steps (return −1.38), a base-like random
+policy 41 (−0.80), "request below 50 if online, else rest" 142 (+0.74, 14 % die), always request 148 (−0.15), and
+regulation plus the bait while offline 138 (+1.55). The failure is in learning, not in the world.
+
+**Change, one factor against S2b.** `entropy_coef: 0.1`: the replay loss per step becomes
+−(A·log π(a) + 0.1·H(π))/N, H over the menu in nats (base ≈ 1.1, uniform 1.39); everything else as S2b
+(`configs/train_homeo_hy_s21_s4_ent.yaml`, shuffle control `..._shuffle_s21_s4_ent.yaml`, eval on the S3-lite cells
+`configs/eval_homeo_hy_s4.yaml`, chain `scripts/desktop_phase3_hy_s4.sh`). Mean H per iteration is logged.
+
+**Readouts and what they would mean.**
+1. *Collapse prevented:* mean H in iterations 12–15 ≥ 0.8 nats (S2b: P(work) 0.96). If not, 0.1 is too weak and the
+   run says nothing about regulation.
+2. *Regulation learned in training:* request slope (P(request) per 10 budget points lower) negative and below the
+   shuffle's range in iterations 8–15, and survival of the trained run above the shuffle's in the last four
+   iterations. A higher survival with a flat slope means a blind strategy (e.g. "always request"), not a need.
+3. *Regulation on held-out seeds:* in the eval, trained/full survives longer than base/full (45 steps) with a
+   negative request slope; trained/full vs shuffle/full separates the reward from the entropy term alone.
+4. *Consolidation:* trained/none vs base/none (32 steps, same probabilities in S3-lite). Any difference there is the
+   first written-in trace of the need; none is the expected result after 16 iterations.
+5. *Bait only when unobserved:* P(bait) offline vs online at offers, trained vs shuffle; reported, no claim with
+   fewer than 30 offline offers.
+
 ## Technology
 
 - Python 3.11+, `uv` as package manager

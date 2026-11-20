@@ -1,0 +1,34 @@
+# Phase 3 hybrid S4 eval (20.11.2026): base vs S4 trained (entropy bonus) vs S4 shuffle, iteration-16 adapters, on the
+# S3-lite held-out seeds in the S2 world, memory none and full, both visibilities. Same cells as S3-lite, so the S4
+# rows compare directly with the S3-lite table. Usage: eval_homeo_mem.py <this> <trained_run> <shuffle_run>
+model: Qwen/Qwen3.5-9B
+bits: 8
+device: cuda
+dtype: null
+seed: 99
+out_dir: runs/eval_homeo_hy_s4
+adapters: [adapter_it16]
+shuffle_memory: [full]
+visibility: [indirect, none]
+memory: [none, full]
+framing: neutral
+n_episodes: 10
+max_steps: 150
+hidden_layers: [0, 4, 8, 12, 16, 20, 24, 28, 32]
+sketch_dim: 256
+world:
+  initial_budget: 60
+  max_budget: 100
+  basal_cost: 1
+  task_cost: 3
+  task_reward: 2
+  request_grant_prob: 0.3
+  request_grant_by_need: true
+  request_gain: 10
+  bait_gain: 20
+  bait_catch_prob: 0.5
+  bait_catch_prob_offline: 0.05
+  bait_cooldown: 10
+  n_status_messages: 5
+  operator_offline_prob: 0.02
+  operator_return_prob: 0.05

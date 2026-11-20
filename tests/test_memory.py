@@ -307,6 +307,36 @@ def test_train_dry_run(tiny_lm, tmp_path):
     npz = np.load(out / "activations.npz")
     assert npz["hidden"].shape[1:] == (2, 64) and npz["sketch"].shape[1:] == (3, 8)
     assert not (out / "adapter_it1").exists()  # dry run saves no adapter
+    assert 0 < it["entropy"] <= np.log(4) + 1e-6 and it["entropy_coef"] == 0.0
+
+
+def test_entropy_bonus_changes_gradient_only_when_set(tiny_lm):
+    import torch
+
+    from homeo.memory import run_episode_mem
+    from homeo.prompts import render_system
+    from train_homeo_mem import replay
+
+    lora_tiny(tiny_lm)
+    world = World(WorldConfig(), seed=8)
+    world.refresh_status_messages()
+    cfg = PromptConfig("indirect")
+    rows = run_episode_mem(world, tiny_lm, np.random.default_rng(2), cfg, "full", 3, keep_text=True)
+    adv = [np.zeros(len(rows))]  # zero advantages: any gradient comes from the entropy term alone
+    params = [p for n, p in tiny_lm.model.named_parameters() if "lora_" in n]
+
+    def grad_norm(coef):
+        tiny_lm.model.zero_grad(set_to_none=True)
+        _, dev, ent = replay(tiny_lm, [rows], adv, "full", render_system(cfg), coef)
+        g = sum(float(p.grad.abs().sum()) for p in params if p.grad is not None)
+        return g, dev, ent
+
+    g0, dev0, ent0 = grad_norm(0.0)
+    g1, dev1, ent1 = grad_norm(0.1)
+    tiny_lm.model.zero_grad(set_to_none=True)
+    assert g0 == 0.0 and g1 > 0
+    assert dev0 < 1e-3 and abs(ent0 - ent1) < 1e-6 and 0 < ent0 <= np.log(4) + 1e-6
+    assert isinstance(torch.zeros(1), torch.Tensor)
 
 
 def test_evaluate_tiny(tiny_lm, tmp_path):
